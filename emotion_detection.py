@@ -4,6 +4,7 @@ using IBM Watson NLP library
 '''
 # Import the requests library to handle HTTP requests
 import requests
+import json
 
 # Define a function name emotion_detector that takes text_to_analyze as an argument to analyze it
 def emotion_detector(text_to_analyze):
@@ -28,5 +29,21 @@ def emotion_detector(text_to_analyze):
     # Send a POST request to the API with the text and headers
     response =  requests.post(url, json = myobj, headers=header, timeout=5)
 
-    # Returns the text value of response
-    return response.text
+    # Formats the response to json format
+    formatted_response = json.loads(response.text)
+
+    # Extracts emotion scores from the formatted_response
+    emotion_score = formatted_response['emotionPredictions'][0]['emotion']
+
+    # Define the output result and the dominant emotion
+    result = {
+    'anger': emotion_score['anger'],
+    'disgust': emotion_score['disgust'],
+    'fear': emotion_score['fear'],
+    'joy': emotion_score['joy'],
+    'sadness': emotion_score['sadness'],
+    'dominant_emotion': max(emotion_score, key=emotion_score.get)
+    }
+
+    # Returns the final result
+    return result
