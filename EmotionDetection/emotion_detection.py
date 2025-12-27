@@ -32,18 +32,32 @@ def emotion_detector(text_to_analyze):
     # Formats the response to json format
     formatted_response = json.loads(response.text)
 
-    # Extracts emotion scores from the formatted_response
-    emotion_score = formatted_response['emotionPredictions'][0]['emotion']
+    # Displays None key values if string is empty or received status code of 400
+    if response.status_code == 400:
+        result = {
+        'anger': None,
+        'disgust': None,
+        'fear': None,
+        'joy': None,
+        'sadness': None,
+        'dominant_emotion': None
+        }
 
-    # Define the output result and the dominant emotion
-    result = {
-    'anger': emotion_score['anger'],
-    'disgust': emotion_score['disgust'],
-    'fear': emotion_score['fear'],
-    'joy': emotion_score['joy'],
-    'sadness': emotion_score['sadness'],
-    'dominant_emotion': max(emotion_score, key=emotion_score.get)
-    }
+    # Displays the normal results if status code is 200 OK
+    else:
+
+        # Extracts emotion scores from the formatted_response
+        emotion_score = formatted_response['emotionPredictions'][0]['emotion']
+
+        # Define the output result and the dominant emotion
+        result = {
+        'anger': emotion_score['anger'],
+        'disgust': emotion_score['disgust'],
+        'fear': emotion_score['fear'],
+        'joy': emotion_score['joy'],
+        'sadness': emotion_score['sadness'],
+        'dominant_emotion': max(emotion_score, key=emotion_score.get)
+        }
 
     # Returns the final result
     return result
